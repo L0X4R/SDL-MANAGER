@@ -1,20 +1,4 @@
-#pragma region INCLUDES
-#include "ResourceManager.h"
 #include "VideoManager.h"
-#include "AudioManager.h"
-
-#include <iostream>;
-#include <map>
-#include <vector>
-#include <string>
-
-#include "SDL.h"
-#include "SDL_image.h"
-#include "SDL_mixer.h"
-#include "config.h"
-
-using namespace std;
-#pragma endregion
 
 VideoManager* VideoManager::pInstance = NULL;
 
@@ -47,7 +31,7 @@ VideoManager::~VideoManager()
 
 int VideoManager::getProcessTime()
 {
-	return SDL_GetTicks();
+	return SDL_GetTicks64();
 }
 
 VideoManager* VideoManager::getInstance()
@@ -58,13 +42,16 @@ VideoManager* VideoManager::getInstance()
 	return pInstance;
 }
 
-void VideoManager::createWindow(const char* Title, int width, int height)
+void VideoManager::createWindow(string Title, int width, int height)
 {
 	LOG("CREANDO VENTANA...");
-	gWindow = SDL_CreateWindow(Title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_SHOWN);
+	mainTitle = Title;
+	gWindow = SDL_CreateWindow(Title.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_SHOWN);
 
 	if (gWindow != NULL)
 	{
+		windowIcon = IMG_Load("assets/icon.png");
+		SDL_SetWindowIcon(gWindow, windowIcon);
 		GOOD("VENTANA CREADA.");
 	}
 	else
@@ -87,7 +74,13 @@ void VideoManager::createWindow(const char* Title, int width, int height)
 	}
 }
 
-void VideoManager::renderGraphic(int graphicId, int posX, int posY, int width, int height)
+void VideoManager::updateSubTitle(string Title)
+{
+	string newTitle = mainTitle + " " + Title;
+	SDL_SetWindowTitle(gWindow, newTitle.c_str());
+}
+
+void VideoManager::renderGraphic(int graphicId, int posX, int posY, int width, int height, int offsetX, int offsetY)
 {
 	SDL_Rect r, rectAux;
 
@@ -96,8 +89,8 @@ void VideoManager::renderGraphic(int graphicId, int posX, int posY, int width, i
 	r.w = width;
 	r.h = height;
 
-	rectAux.x = 0;
-	rectAux.y = 0;
+	rectAux.x = offsetX;
+	rectAux.y = offsetY;
 	rectAux.w = width;
 	rectAux.h = height;
 
@@ -116,6 +109,17 @@ void VideoManager::updateScreen()
 	SDL_RenderPresent(GPU);
 }
 
+float VideoManager::getDeltaTime()
+{
+	return deltaTime;
+}
+
+void VideoManager::drawPoint(int x, int y)
+{
+	SDL_SetRenderDrawColor(GPU, 255, 0, 255, 255);
+	SDL_RenderDrawPoint(GPU,x, y);
+}
+
 void VideoManager::waitTime(int ms)
 {
 	SDL_Delay(ms);
@@ -125,9 +129,17 @@ int VideoManager::autoWaitTime()
 {
 	int FPS;
 
-	currentTime = SDL_GetTicks();
+	currentTime = SDL_GetTicks64();
 	deltaTime = currentTime - lastTime;
 	FPS = (1000.0f / deltaTime);
+
+	updateCounter += deltaTime;
+
+	if (updateCounter >= eachUpdate)
+	{
+		updateCounter = 0;
+		updateSubTitle(" | FPS: " + to_string(FPS));
+	}
 
 	if (deltaTime < (int)msFrame)
 	{

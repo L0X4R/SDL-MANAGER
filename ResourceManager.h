@@ -2,14 +2,12 @@
 #define RESOURCEMANAGER_H
 
 #pragma region INCLUDES
-#include "ResourceManager.h"
 #include "VideoManager.h"
 #include "AudioManager.h"
 
-#include <iostream>
+#include <iostream>;
 #include <map>
 #include <vector>
-#include <string>
 
 #include "SDL.h"
 #include "SDL_image.h"

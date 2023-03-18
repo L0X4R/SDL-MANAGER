@@ -1,19 +1,5 @@
 #pragma region INCLUDES
 #include "ResourceManager.h"
-#include "VideoManager.h"
-#include "AudioManager.h"
-
-#include <iostream>;
-#include <map>
-#include <vector>
-#include <string>
-
-#include "SDL.h"
-#include "SDL_image.h"
-#include "SDL_mixer.h"
-#include "config.h"
-
-using namespace std;
 #pragma endregion
 
 ResourceManager* ResourceManager::pInstance = NULL;
@@ -120,6 +106,12 @@ string ResourceManager::getGraphicPathByID(Sint32 ID)
 Sint32 ResourceManager::addGraphic(const char* file)
 {
 	SDL_Texture* tempTexture = IMG_LoadTexture(GPU, file);
+
+	if (tempTexture == NULL)
+	{
+		ERROR("GRAPHIC PATHFILE NOT FOUND.");
+		exit(1);
+	}
 
 	if (texturesFirstSlot != -1)
 	{

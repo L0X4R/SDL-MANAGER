@@ -2,6 +2,8 @@
 
 // PROGRAM DATA.
 #define FRAMERATE 144
+#define SCREEN_WIDTH 1280
+#define SCREEN_HEIGHT 960
 
 // LOG MESSAGES.
 #define LOG(msg) cout << "[INFO]: " << msg << endl;

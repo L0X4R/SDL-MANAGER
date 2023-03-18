@@ -1,59 +1,57 @@
 #pragma region INCLUDES
-#include <iostream>
-
 #include "ResourceManager.h"
 #include "VideoManager.h"
-#include "AudioManager.h"
-
-using namespace std;
+#include "SceneManager.h"
+#include "InputManager.h"
 #pragma endregion
 
 int main(int argc, char* args[])
 {
-#pragma region SETUP
+#pragma region MANAGER SETUP
+	// INSTANCIA VIDEO MANAGER + CREACION DE VENTANA.
 	VideoManager* WINDOW = VideoManager::getInstance();
-	WINDOW->createWindow("WINDOW TITLE", 1280, 720);
 
+	WINDOW->createWindow("WINDOW TITLE", SCREEN_WIDTH, SCREEN_HEIGHT);
+
+	// INSTANCIA RESOURCE MANAGER.
 	ResourceManager* RESOURCES = ResourceManager::getInstance();
 
-	AudioManager* AUDIO = AudioManager::getInstance();
+	// INSTANCIA SCENE MANAGER
+	SceneManager* SCENE = SceneManager::getInstance();
 
-	SDL_Event event;
+	// INSTANCIA INPUT MANAGER
+	InputManager* INPUT = InputManager::getInstance();
+
+	SCENE->init();
+	//SCENE->loadScene(SceneEnum::MAIN_MENU);
 #pragma endregion
+
+#pragma region INIT
+	// MAIN GAME
 	bool endProcess = false;
+	bool endGame = false;
+#pragma endregion
 
 	while (!endProcess)
 	{
-		while (SDL_PollEvent(&event))
+		while (!endGame)
 		{
-			switch (event.type)
+			INPUT->update();
+
+			if (INPUT->needCloseGame())
 			{
-			case SDL_QUIT:
+				endGame = true;
 				endProcess = true;
-				break;
-			case SDL_KEYDOWN:
-				if (event.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
-					endProcess = true;
-				break;
-			default:
-				break;
 			}
+
+			//SCENE->getLoadedScene()->update();
+			//SCENE->getLoadedScene()->render();
+			WINDOW->updateScreen();
+			WINDOW->clearScreen(0, 0, 0, 255);
+			WINDOW->autoWaitTime();
 		}
-
-		WINDOW->updateScreen();
-		WINDOW->clearScreen(0, 0, 0, 255);
-
-#pragma region WAIT TIME AND FPS
-		int FPS = WINDOW->autoWaitTime();
-
-		if (WINDOW->getProcessTime() % 250 <= 10)
-		{
-			printf("FPS: %d\r", FPS);
-		}
-#pragma endregion
 	}
 
 	WINDOW->close();
-
 	return 0;
 }

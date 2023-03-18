@@ -30,6 +30,15 @@
     <ClCompile Include="VideoManager.cpp">
       <Filter>MANAGERS</Filter>
     </ClCompile>
+    <ClCompile Include="SceneManager.cpp">
+      <Filter>MANAGERS</Filter>
+    </ClCompile>
+    <ClCompile Include="InputManager.cpp">
+      <Filter>MANAGERS</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>MANAGERS</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AudioManager.h">
@@ -42,6 +51,15 @@
       <Filter>MANAGERS</Filter>
     </ClInclude>
     <ClInclude Include="VideoManager.h">
+      <Filter>MANAGERS</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>MANAGERS</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneManager.h">
+      <Filter>MANAGERS</Filter>
+    </ClInclude>
+    <ClInclude Include="InputManager.h">
       <Filter>MANAGERS</Filter>
     </ClInclude>
   </ItemGroup>
